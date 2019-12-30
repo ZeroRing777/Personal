@@ -29,8 +29,7 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity {
 
     private ListView AlbumList;
-    private Button Add;
-
+    private SaveAndLoad sl;
     ArrayList<String> arr;
     ArrayList<Album> albums;
     ArrayList<Photo> photos;
@@ -46,10 +45,9 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar=findViewById(R.id.toolbar);
         toolbar.setTitle("Album List");
         setSupportActionBar(toolbar);
+        sl=new SaveAndLoad();
 
-
-        //  Add=findViewById(R.id.AddButton);
-        albums = (ArrayList<Album>) getIntent().getSerializableExtra("albums");
+        albums=sl.load(this);
 
         arr=new ArrayList<String>();
         for (int i=0;i<albums.size();i++){
@@ -88,7 +86,9 @@ public class MainActivity extends AppCompatActivity {
         if (id == R.id.AddAlbum) {
 
             Intent intent = new Intent(getApplicationContext(),CreateAlbum.class);
-
+            Bundle bundle = new Bundle();
+            bundle.putSerializable("albums",albums);
+            intent.putExtras(bundle);
             startActivityForResult(intent,1);
 
             return true;
@@ -161,7 +161,8 @@ public class MainActivity extends AppCompatActivity {
 
                 String name = album.getName();
                 arr.add(name);
-                //SaveData();
+                sl.Save(albums,this);
+
                 ArrayAdapter adapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, arr);
                 AlbumList.setAdapter(adapter);
 
