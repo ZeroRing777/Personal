@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">PhotosAlbum</string>
+    <string name="AddAlbum">Add New Album</string>
+    <string name="SearchPhotos">Search Photos</string>
+</resources>

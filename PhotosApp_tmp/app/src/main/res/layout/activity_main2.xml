@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Main2Activity">
+
+    <include
+        android:id="@+id/toolbar"
+
+        layout="@layout/toolbar"/>
+
+
+
+    <TextView
+        android:id="@+id/Welcome"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Welcome !"
+        android:textSize="22dp"
+        android:typeface="sans"
+
+        app:layout_constraintBottom_toBottomOf="@id/OpenAlbumList"
+        app:layout_constraintEnd_toEndOf="parent"
+
+
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+    />
+
+    <Button
+        android:id="@+id/OpenAlbumList"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Open Album List"
+        android:textSize="16dp"
+        android:typeface="normal"
+        android:background="@android:color/darker_gray"
+        android:textColor="@android:color/white"
+        android:textAllCaps="false"
+        android:paddingRight="10dp"
+        android:paddingLeft="10dp"
+        app:layout_constraintBottom_toBottomOf="@id/SearchForPhotos"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/Welcome"
+
+        />
+
+    <Button
+        android:id="@+id/SearchForPhotos"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Search For Photos"
+
+        android:textSize="16dp"
+        android:typeface="normal"
+        android:background="@android:color/darker_gray"
+        android:textColor="@android:color/white"
+        android:textAllCaps="false"
+        android:paddingRight="10dp"
+        android:paddingLeft="10dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/OpenAlbumList"
+
+      />
+</androidx.constraintlayout.widget.ConstraintLayout>
