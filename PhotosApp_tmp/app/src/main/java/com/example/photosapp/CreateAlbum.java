@@ -27,7 +27,6 @@ public class CreateAlbum extends AppCompatActivity {
     private Uri imageUri;
     private ImageView image;
 
-    ArrayList<String> uriArray;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -111,21 +110,10 @@ public class CreateAlbum extends AppCompatActivity {
         if (resultCode == RESULT_OK && requestCode == PICK_IMAGE) {
 
 
-            // album = (Album)data.getSerializableExtra("album");
-           // album = (Album) getIntent().getSerializableExtra("album");
-           // uriArray = (ArrayList<String>) getIntent().getSerializableExtra("uriArray");
-
             imageUri = data.getData();
             image.setImageURI(imageUri);
             uri = imageUri.toString();
 
-         //   uriArray.add(uri);
-            // ReturnMain(album,Array);
-
-           // photos.add(p);
-            //album.setPhotos(photos);
-            //adapter = new PhotoListAdapter(photos, this);
-            //photoList.setAdapter(adapter);
 
 
         }}

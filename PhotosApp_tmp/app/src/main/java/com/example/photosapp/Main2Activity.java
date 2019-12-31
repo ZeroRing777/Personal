@@ -62,4 +62,12 @@ public class Main2Activity extends AppCompatActivity {
 
 
     }
+
+
+    @Override
+    public void onRestart() {
+        super.onRestart();
+        albums=sl.load(this);
+    }
+
 }

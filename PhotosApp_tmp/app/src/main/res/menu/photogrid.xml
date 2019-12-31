@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".OpenAlbum"
+    >
+    <item
+        android:id="@+id/AddPhoto"
+
+        android:title="Add Photo"
+        android:textSize="20dp"
+        android:typeface="normal"
+        android:textAllCaps="false"
+        app:showAsAction="ifRoom"
+
+
+        />
+    <item
+        android:id="@+id/RenameAlbum"
+
+        android:title="Rename Album"
+        android:textSize="20dp"
+        android:typeface="normal"
+        android:textAllCaps="false"
+        app:showAsAction="ifRoom"
+
+
+        />
+    <item
+        android:id="@+id/DeleteAlbum"
+
+        android:title="Delete Album"
+        android:textSize="20dp"
+        android:typeface="normal"
+        android:textAllCaps="false"
+        app:showAsAction="ifRoom"
+
+
+        />
+
+
+
+
+
+
+
+</menu>

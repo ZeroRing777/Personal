@@ -1,22 +1,24 @@
 package com.example.photosapp;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
+import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Bitmap;
 
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
-import android.view.View;
+import android.view.Menu;
+import android.view.MenuItem;
+
 import android.widget.Button;
 
 import android.widget.GridView;
 import android.widget.ImageView;
-import android.widget.ListView;
 
-import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.util.ArrayList;
 
@@ -24,46 +26,40 @@ public class OpenAlbum extends AppCompatActivity {
 
 
     Album album;
-    GridView photoGrid;
+    Toolbar toolbar;
+
     Button addPhoto;
     private static final int PICK_IMAGE = 100;
     ArrayList<String> uriArray;
-    ArrayList<ImageView> imageArray;
-    ArrayList<Uri> imageUriArray;
+    ArrayList<Album> albums;
+
     String uri;
     Uri imageUri;
-    ImageView imageview;
-    ArrayList<Album> albums;
+    private SaveAndLoad sl;
+
     ArrayList<Photo> photos;
-    Photo onePhoto;
+
     Button confirm, delete, rename;
-    Bitmap image;
+
     ImageView photo;
-    ListView photoList;
-    ImageLoader imageLoader;
+    GridView photoList;
+
     String oldname;
-    private static PhotoListAdapter adapter;
+    private static ImageAdapter adapter;
     Photo p;
 
-    boolean flag;
     String State;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_open_album);
+        albums=new ArrayList<Album>();
+        sl=new SaveAndLoad();
+        albums=sl.load(this);
 
-        //photoGrid = findViewById(R.id.PhotoGrid);
 
-        //  photo=findViewById(R.id.photo);
         photoList = findViewById(R.id.photoList);
-       // photos = new ArrayList<Photo>();
-
-        addPhoto = findViewById((R.id.AddPhoto));
-        confirm = findViewById(R.id.RenameAlbum);
-        delete = findViewById(R.id.DeleteAlbum);
-        rename = findViewById(R.id.Confirm);//something strange happens in openAlbum xml...
-
 
 
         album = (Album) getIntent().getSerializableExtra("album");
@@ -71,58 +67,18 @@ public class OpenAlbum extends AppCompatActivity {
         oldname=(String) getIntent().getSerializableExtra("name");
 
         uriArray = (ArrayList<String>) getIntent().getSerializableExtra("uriArray");
+         toolbar=findViewById(R.id.toolbar);
+        toolbar.setTitle(album.getName());
+        setSupportActionBar(toolbar);
+
         if (uriArray == null) {
             uriArray = new ArrayList<String>();
         }
-      /*  if (uriArray != null) {
-            for (int i = 0; i < uriArray.size(); i++) {
-                uri = uriArray.get(i);
-                Log.d("uri when open", uriArray.get(i));
-                Photo photo = new Photo(uri);
-                photos.add(photo);
 
-
-            }
-            adapter = new PhotoListAdapter(photos, this);
-            photoList.setAdapter(adapter);
-            //   imageUri = Uri.parse(uri);
-            //  photo.setImageURI(imageUri);//get the last photo for now
-
-
-        }*/
-        adapter = new PhotoListAdapter(photos, this);
+        adapter = new ImageAdapter(this,photos);
         photoList.setAdapter(adapter);
 
 
-        addPhoto.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                openGallery();
-            }
-        });
-        delete.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                DeleteAlbum();
-            }
-        });
-        confirm.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                RenameAlbum();
-            }
-        });
-
-
-        rename.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ReturnMain(album, uriArray);
-            }
-        });
-
-   /*     PhotoAdapter customAdapter = new PhotoAdapter(getApplicationContext(), album.getPhotos());
-        photoGrid.setAdapter(customAdapter);*/
 
         photoList.setOnItemClickListener(
                 (p, v, pos, id) -> openPhoto(pos)
@@ -130,6 +86,54 @@ public class OpenAlbum extends AppCompatActivity {
 
 
     }
+
+
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.photogrid, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.AddPhoto) {
+
+            openGallery();
+
+            return true;
+        }
+
+        if(id==R.id.DeleteAlbum){
+            DeleteAlbum();
+            return true;
+        }
+
+        if(id==R.id.RenameAlbum){
+
+            RenameAlbum();
+            return true;
+
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+
+
+
+
+
+
+
+
 
 
     private void openPhoto(int pos) {
@@ -169,25 +173,43 @@ public class OpenAlbum extends AppCompatActivity {
 
     private void DeleteAlbum() {
 
-        album = (Album) getIntent().getSerializableExtra("album");
 
-        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-        Bundle bundle = new Bundle();
-        bundle.putSerializable("album2", album);
-        bundle.putSerializable("name", oldname);
+        DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                switch (which){
+                    case DialogInterface.BUTTON_POSITIVE:
+                        //Do your Yes progress
+                        album = (Album) getIntent().getSerializableExtra("album");
 
-        bundle.putString("state", "delete");
-        intent.putExtras(bundle);
-        setResult(RESULT_OK, intent);
-        finish();
+                        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                        Bundle bundle = new Bundle();
+                        bundle.putSerializable("album2", album);
+                        bundle.putSerializable("name", oldname);
+
+                        bundle.putString("state", "delete");
+                        intent.putExtras(bundle);
+                        setResult(RESULT_OK, intent);
+                        finish();
+
+                        break;
+
+                    case DialogInterface.BUTTON_NEGATIVE:
+                        //Do your No progress
+                        break;
+                }
+            }
+        };
+        AlertDialog.Builder ab = new AlertDialog.Builder(this);
+        ab.setMessage("Are you sure to delete?").setPositiveButton("Yes", dialogClickListener)
+                .setNegativeButton("No", dialogClickListener).show();
+
 
 
     }
 
-    private void ReturnMain(Album album, ArrayList<String> uriArray) {
+  /*  private void ReturnMain(Album album, ArrayList<String> uriArray) {
 
-
-        //uriArray.add(uri);
 
         Intent intent = new Intent(getApplicationContext(), MainActivity.class);
         Bundle bundle = new Bundle();
@@ -206,7 +228,7 @@ public class OpenAlbum extends AppCompatActivity {
         setResult(RESULT_OK, intent);
         finish();
 
-    }
+    }*/
 
 
     private void openGallery() {
@@ -227,19 +249,46 @@ public class OpenAlbum extends AppCompatActivity {
 
             // album = (Album)data.getSerializableExtra("album");
             album = (Album) getIntent().getSerializableExtra("album");
+
             uriArray = (ArrayList<String>) getIntent().getSerializableExtra("uriArray");
+
 
             imageUri = data.getData();
             // photo.setImageURI(imageUri);
             uri = imageUri.toString();
+            for(int i=0;i<uriArray.size();i++){
+                if(uriArray.contains(uri)){
+
+                    new AlertDialog.Builder(OpenAlbum.this)
+                            .setTitle("Cannot Add Photo")
+                            .setMessage("Photo already exists in this album")
+                            .setPositiveButton(android.R.string.ok, null)
+                            .show();
+
+
+                    return;
+                }
+
+
+            }
 
             uriArray.add(uri);
             // ReturnMain(album,Array);
             Photo p = new Photo(uri);
             photos.add(p);
             album.setPhotos(photos);
-            adapter = new PhotoListAdapter(photos, this);
+            adapter = new ImageAdapter(this,photos);
             photoList.setAdapter(adapter);
+            for(int i=0;i<albums.size();i++){
+                if(albums.get(i).getName().equalsIgnoreCase(album.getName())){
+                    albums.set(i,album);
+                }
+
+            }
+
+
+
+            sl.Save(albums,this);
 
 
         }
@@ -257,14 +306,8 @@ public class OpenAlbum extends AppCompatActivity {
                     }
                 }
 
-             /*   for (int i = 0; i < uriArray.size(); i++) {
-                    if (photos.get(i).getImageUri().equals(uriArray.get(i))) {
-                        uriArray.remove(i);
-                    }
-                }*/
 
-
-                adapter = new PhotoListAdapter(photos, this);
+                adapter = new ImageAdapter(this,photos);
                 photoList.setAdapter(adapter);
 
             }
@@ -291,9 +334,20 @@ public class OpenAlbum extends AppCompatActivity {
 
 
 
-            String name=(String) data.getSerializableExtra("NewName");
-            album.setName(name);
-            State=(String) data.getSerializableExtra("State");
+            String Oldname=album.getName();
+            String Newname=(String) data.getSerializableExtra("NewName");
+            for(int i=0;i<albums.size();i++){
+                if(albums.get(i).getName().equalsIgnoreCase(Oldname)){
+                    albums.get(i).setName(Newname);
+                }
+
+            }
+            sl.Save(albums,this);
+
+            toolbar.setTitle(Newname);
+            setSupportActionBar(toolbar);
+           // State=(String) data.getSerializableExtra("State");
+
 
 
 

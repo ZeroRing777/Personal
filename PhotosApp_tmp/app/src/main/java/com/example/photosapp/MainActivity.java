@@ -48,6 +48,10 @@ public class MainActivity extends AppCompatActivity {
         sl=new SaveAndLoad();
 
         albums=sl.load(this);
+        if(albums.isEmpty()){
+            Album a=new Album("Default album");
+            albums.add(a);
+        }
 
         arr=new ArrayList<String>();
         for (int i=0;i<albums.size();i++){
@@ -64,6 +68,29 @@ public class MainActivity extends AppCompatActivity {
                 (p,v,pos,id) -> openAlbum(pos)
         );
 
+    }
+
+    @Override
+    public void onRestart() {
+        super.onRestart();
+        //When BACK BUTTON is pressed, the activity on the stack is restarted
+        //Do what you want on the refresh procedure here
+        albums=sl.load(this);
+
+        arr=new ArrayList<String>();
+        for (int i=0;i<albums.size();i++){
+            String name=albums.get(i).getName();
+            arr.add(name);
+        }
+
+
+        ArrayAdapter adapter=new ArrayAdapter(this,android.R.layout.simple_list_item_1,arr);
+        AlbumList.setAdapter(adapter);
+
+
+        AlbumList.setOnItemClickListener(
+                (p,v,pos,id) -> openAlbum(pos)
+        );
     }
 
 
@@ -125,7 +152,7 @@ public class MainActivity extends AppCompatActivity {
 
         if(album.getPhotos()!=null)
 
-        {//uri=album.getPhotos().get(0).getImageUri();//get the first photo for temp
+        {
             for(int i=0;i<album.getPhotos().size();i++) {
                 uri=album.getPhotos().get(i).getImageUri();
                 uriArray.add(uri);
@@ -136,13 +163,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         bundle.putSerializable("uriArray",uriArray);
-      /*  if(album.getPhotos()!=null) {
-            bundle.putSerializable("uri", album.getPhotos().get(0).imageUri);
-            Log.d("uri when open", album.getPhotos().get(0).imageUri);
-        }
-        else{
-            bundle.putSerializable("uri","none");
-        }*/
+
         intent.putExtras(bundle);
 
         startActivityForResult(intent,2);
@@ -168,6 +189,7 @@ public class MainActivity extends AppCompatActivity {
 
             }
         }
+        //Contains unnecessary code here, too lazy to modify it
         if (requestCode == 2&&resultCode == RESULT_OK) {//OpenAlbum Result
 
             String s = (String) data.getSerializableExtra("state");
@@ -192,13 +214,7 @@ public class MainActivity extends AppCompatActivity {
             if (s.equals("confirm")&&resultCode == RESULT_OK) {//going back after opening photo
 
 
-            /*    for(int i=0; i<uriArray2.size();i++) {
-                    uri=uriArray2.get(i);
-                    Log.d("uri when going back",uri);
-                    Photo photo = new Photo(uri);
-                    photos.add(photo);}
 
-                album2.setPhotos(photos);*/
 
 
                 for (int j = 0; j < albums.size(); j++) {
@@ -214,7 +230,7 @@ public class MainActivity extends AppCompatActivity {
 
 
             }
-            //Log.d("Album Confrirm", String.valueOf(album2.getNumPhotos()));
+
 
 
 
@@ -230,45 +246,13 @@ public class MainActivity extends AppCompatActivity {
                 arr.remove(name);
             }
 
-           // SaveData();
+           sl.Save(albums,this);
             ArrayAdapter adapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, arr);
             AlbumList.setAdapter(adapter);
 
 
         }
     }
-
-
-   /* private void SaveData () {
-        SharedPreferences sharedPreferences = getSharedPreferences("shared", MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        Gson gson = new Gson();
-        String json = gson.toJson(albums);
-        editor.putString("task list", json);
-        editor.apply();
-
-    }
-
-
-    private void loadData() {
-
-        SharedPreferences sharedPreferences = getSharedPreferences("shared", MODE_PRIVATE);
-        Gson gson = new Gson();
-        String json = sharedPreferences.getString("task list", null);
-        Type type = new TypeToken<ArrayList<Album>>() {
-        }.getType();
-        albums = gson.fromJson(json, type);
-        if (albums == null) {
-
-            albums = new ArrayList<Album>();
-        }
-
-    }*/
-
-
-
-
-
 
 
 }
