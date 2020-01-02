@@ -28,7 +28,6 @@ public class OpenAlbum extends AppCompatActivity {
     Album album;
     Toolbar toolbar;
 
-    Button addPhoto;
     private static final int PICK_IMAGE = 100;
     ArrayList<String> uriArray;
     ArrayList<Album> albums;
@@ -39,16 +38,12 @@ public class OpenAlbum extends AppCompatActivity {
 
     ArrayList<Photo> photos;
 
-    Button confirm, delete, rename;
-
     ImageView photo;
     GridView photoList;
 
     String oldname;
     private static ImageAdapter adapter;
     Photo p;
-
-    String State;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,6 +78,33 @@ public class OpenAlbum extends AppCompatActivity {
         photoList.setOnItemClickListener(
                 (p, v, pos, id) -> openPhoto(pos)
         );
+
+
+    }
+
+    @Override
+    public void onRestart() {
+        super.onRestart();
+        //When BACK BUTTON is pressed, the activity on the stack is restarted
+        //Do what you want on the refresh procedure here
+        albums=sl.load(this);
+        for(int i=0;i<albums.size();i++){
+
+            if(album.getName().equalsIgnoreCase(albums.get(i).getName())){
+
+                album=albums.get(i);
+                break;
+            }
+
+        }
+        photos=album.getPhotos();
+
+        adapter = new ImageAdapter(this,photos);
+        photoList.setAdapter(adapter);
+        photoList.setOnItemClickListener(
+                (p, v, pos, id) -> openPhoto(pos)
+        );
+
 
 
     }
@@ -127,15 +149,6 @@ public class OpenAlbum extends AppCompatActivity {
     }
 
 
-
-
-
-
-
-
-
-
-
     private void openPhoto(int pos) {
 
         // Photo p=(Photo) photoList.getItemAtPosition(pos);
@@ -148,6 +161,8 @@ public class OpenAlbum extends AppCompatActivity {
 
         Bundle bundle = new Bundle();
         bundle.putSerializable("photo", p);
+        bundle.putSerializable("album",album);
+        bundle.putSerializable("pos",pos);
         intent.putExtras(bundle);
         startActivityForResult(intent, 3);
 
@@ -293,6 +308,7 @@ public class OpenAlbum extends AppCompatActivity {
 
         }
 
+        //Agin, contains unnecessary code
         if (resultCode == RESULT_OK && requestCode == 3) {//openPhoto
            String state2=(String) data.getSerializableExtra("PhotoState");
 

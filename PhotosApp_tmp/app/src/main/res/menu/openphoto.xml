@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".OpenPhoto"
+    >
+    <item
+        android:id="@+id/DeletePhoto"
+
+        android:title="Delete Photo"
+        android:textSize="20dp"
+        android:typeface="normal"
+        android:textAllCaps="false"
+        app:showAsAction="ifRoom"
+
+
+        />
+    <item
+        android:id="@+id/EditTag"
+
+        android:title="Edit Tag"
+        android:textSize="20dp"
+        android:typeface="normal"
+        android:textAllCaps="false"
+        app:showAsAction="ifRoom"
+
+
+        />
+    <item
+        android:id="@+id/MovePhoto"
+
+        android:title="Move Photo"
+        android:textSize="20dp"
+        android:typeface="normal"
+        android:textAllCaps="false"
+        app:showAsAction="ifRoom"
+
+
+        />
+
+
+
+</menu>

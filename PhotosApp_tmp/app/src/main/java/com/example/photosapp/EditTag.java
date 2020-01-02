@@ -18,6 +18,8 @@ public class EditTag extends AppCompatActivity {
     EditText name,type;
     ListView TagList;
     Photo photo;
+    SaveAndLoad sl;
+    ArrayList<Album> albums;
      ArrayList<String> arr;
      String str,value,key;
 
@@ -25,6 +27,9 @@ public class EditTag extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_tag);
+        sl=new SaveAndLoad();
+        albums=sl.load(this);
+
 
      photo = (Photo) getIntent().getSerializableExtra("photo2");
         arr=new ArrayList<String>();
@@ -125,10 +130,10 @@ public class EditTag extends AppCompatActivity {
     private void AddTag(){
 
         String t=type.getText().toString();
-        if(!(t.equalsIgnoreCase("person")||t.equalsIgnoreCase("location"))){
+       /* if(!(t.equalsIgnoreCase("person")||t.equalsIgnoreCase("location"))){
 
             return;
-        }
+        }*/
         if(!photo.getTags().contains(t)){
             photo.addTag(t);
         }
