@@ -48,10 +48,10 @@ public class MainActivity extends AppCompatActivity {
         sl=new SaveAndLoad();
 
         albums=sl.load(this);
-        if(albums.isEmpty()){
+      /*  if(albums.isEmpty()){
             Album a=new Album("Default album");
             albums.add(a);
-        }
+        }*/
 
         arr=new ArrayList<String>();
         for (int i=0;i<albums.size();i++){

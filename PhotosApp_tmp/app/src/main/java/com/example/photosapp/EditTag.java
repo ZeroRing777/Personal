@@ -1,10 +1,13 @@
 package com.example.photosapp;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.util.SparseBooleanArray;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -15,13 +18,14 @@ import java.util.ArrayList;
 
 public class EditTag extends AppCompatActivity {
     Button delete,add,confirm;
-    EditText name,type;
+    EditText name;
     ListView TagList;
     Photo photo;
     SaveAndLoad sl;
     ArrayList<Album> albums;
-     ArrayList<String> arr;
-     String str,value,key;
+    ArrayList<String> arr;
+    ArrayList<String > tags;
+    String str;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,10 +37,11 @@ public class EditTag extends AppCompatActivity {
 
      photo = (Photo) getIntent().getSerializableExtra("photo2");
         arr=new ArrayList<String>();
-        arr=photo.getTagsString();
+        arr=photo.getTags();
+        tags=photo.getTags();
         TagList=findViewById(R.id.TagList);
         name=findViewById(R.id.Name);
-        type=findViewById(R.id.Type);
+
         delete=findViewById(R.id.DeleteTag);
         add=findViewById(R.id.AddTag);
         confirm=findViewById(R.id.Confirm);
@@ -63,7 +68,23 @@ public class EditTag extends AppCompatActivity {
         });*/
 
 
-        TagList.setOnItemClickListener(
+        delete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new AlertDialog.Builder(EditTag.this)
+                        .setMessage("Please select the Tag you want to delete")
+                        .setPositiveButton(android.R.string.ok, null)
+                        .show();
+
+
+            }
+
+        });
+
+
+
+
+       TagList.setOnItemClickListener(
                 (p, v, pos, id) -> DeleteTag(pos)
         );
 
@@ -72,34 +93,36 @@ public class EditTag extends AppCompatActivity {
 
     private void DeleteTag(int pos){
 
-        String str=arr.get(pos);
+        DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                switch (which){
+                    case DialogInterface.BUTTON_POSITIVE:
+                        //Do your Yes progress
 
-        try {
+                        str=arr.get(pos);
+                        photo.DeleteTag(str);
+                        arr=photo.getTags();
+                       // arr.remove(pos);
 
-            // add 100 in each value using forEach()
-            photo.tagTable.forEach((k, v) -> {
-                for(int i=0;i<v.size();i++)
-                {	String str1=k+"="+v.get(i);
-                    if(str1.equals(str)) {
-                        key=k;
-                        value=v.get(i);
+                        ArrayAdapter adapter=new ArrayAdapter(EditTag.this,android.R.layout.simple_list_item_1,arr);
+                        TagList.setAdapter(adapter);
+
                         break;
 
-                    }
-
+                    case DialogInterface.BUTTON_NEGATIVE:
+                        //Do your No progress
+                        break;
                 }
+            }
+        };
 
-            });
-        }
-        catch (Exception e) {
+        AlertDialog.Builder ab = new AlertDialog.Builder(this);
+        ab.setMessage("Are you sure to delete?").setPositiveButton("Yes", dialogClickListener)
+                .setNegativeButton("No", dialogClickListener).show();
 
-            System.out.println("Exception: " + e);
-        }
 
-        photo.removeTag(key,value);
-        arr=photo.getTagsString();
-        ArrayAdapter adapter=new ArrayAdapter(this,android.R.layout.simple_list_item_1,arr);
-        TagList.setAdapter(adapter);
+
 
 
     }
@@ -113,8 +136,8 @@ public class EditTag extends AppCompatActivity {
         Bundle bundle = new Bundle();
 
         bundle.putSerializable("photoTag", photo);
-        for(int i=0;i<photo.getTagsString().size();i++)
-        { Log.d("tags when going back", photo.getTagsString().get(i));}//for test
+        for(int i=0;i<photo.getTags().size();i++)
+        { Log.d("tags when going back", photo.getTags().get(i));}//for test
         Log.d("tags when going back","none");
 
         //bundle.putString("TagState","confirm");
@@ -129,19 +152,38 @@ public class EditTag extends AppCompatActivity {
 
     private void AddTag(){
 
-        String t=type.getText().toString();
-       /* if(!(t.equalsIgnoreCase("person")||t.equalsIgnoreCase("location"))){
+        String Tag=name.getText().toString();
+
+        if(Tag.isEmpty()){
+
+            new AlertDialog.Builder(EditTag.this)
+                    .setTitle("Cannot Add Tag")
+                    .setMessage("Tag Name cannot be empty")
+                    .setPositiveButton(android.R.string.ok, null)
+                    .show();
 
             return;
-        }*/
-        if(!photo.getTags().contains(t)){
-            photo.addTag(t);
         }
-        String n=name.getText().toString();
-        photo.addTag(t,n);
-        arr=photo.getTagsString();
+
+        for(int i=0;i<tags.size();i++){
+
+            if(tags.get(i).equalsIgnoreCase(Tag)){
+
+                new AlertDialog.Builder(EditTag.this)
+                        .setTitle("Cannot Add Tag")
+                        .setMessage("Tag already exists")
+                        .setPositiveButton(android.R.string.ok, null)
+                        .show();
+                return;
+
+            }
+
+        }
 
 
+         photo.AddTag(Tag);
+        arr=photo.getTags();
+       // arr.add(Tag);
         ArrayAdapter adapter=new ArrayAdapter(this,android.R.layout.simple_list_item_1,arr);
         TagList.setAdapter(adapter);
 

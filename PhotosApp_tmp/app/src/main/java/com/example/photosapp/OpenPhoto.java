@@ -27,6 +27,7 @@ public class OpenPhoto extends AppCompatActivity {
 
     Photo photo;
     Album album;
+    Album album2;
     String uri;
     Uri imageUri;
     Toolbar toolbar;
@@ -60,11 +61,11 @@ public class OpenPhoto extends AppCompatActivity {
         imageUri=Uri.parse(uri);
         photoImage.setImageURI(imageUri);
         toolbar=findViewById(R.id.toolbar);
-        if(photo.getTagsString().isEmpty()){
+       if(photo.getTags().isEmpty()){
             tagString="No Tag";
         }
         else{
-            tagString=photo.getTagsString().get(0);
+            tagString=photo.getTags().get(0);
         }
 
         toolbar.setTitle(tagString);
@@ -118,11 +119,11 @@ public class OpenPhoto extends AppCompatActivity {
         imageUri=Uri.parse(uri);
         photoImage.setImageURI(imageUri);
         toolbar=findViewById(R.id.toolbar);
-        if(photo.getTagsString().isEmpty()){
+        if(photo.getTags().isEmpty()){
             tagString="No Tag";
         }
         else{
-            tagString=photo.getTagsString().get(0);
+            tagString=photo.getTags().get(0);
         }
 
         toolbar.setTitle(tagString);
@@ -148,11 +149,11 @@ public class OpenPhoto extends AppCompatActivity {
         imageUri=Uri.parse(uri);
         photoImage.setImageURI(imageUri);
         toolbar=findViewById(R.id.toolbar);
-        if(photo.getTagsString().isEmpty()){
+        if(photo.getTags().isEmpty()){
             tagString="No Tag";
         }
         else{
-            tagString=photo.getTagsString().get(0);
+            tagString=photo.getTags().get(0);
         }
 
         toolbar.setTitle(tagString);
@@ -175,11 +176,11 @@ public class OpenPhoto extends AppCompatActivity {
         //When BACK BUTTON is pressed, the activity on the stack is restarted
         //Do what you want on the refresh procedure here
         albums=sl.load(this);
-        if(photo.getTagsString().isEmpty()){
+        if(photo.getTags().isEmpty()){
             tagString="No Tag";
         }
         else{
-            tagString=photo.getTagsString().get(0);
+            tagString=photo.getTags().get(0);
         }
 
         toolbar.setTitle(tagString);
@@ -218,9 +219,31 @@ public class OpenPhoto extends AppCompatActivity {
            return true;
        }
 
+       if(id==R.id.MovePhoto){
+
+           MovePhoto();
+           return true;
+
+       }
+
 
 
         return super.onOptionsItemSelected(item);
+    }
+
+
+    private void MovePhoto(){
+
+        Intent intent = new Intent(getApplicationContext(), OpenAlbumList.class);
+        albums=sl.load(this);
+        Bundle bundle=new Bundle();
+        bundle.putSerializable("albums",albums);
+        intent.putExtras(bundle);
+
+        startActivityForResult(intent,6);
+
+
+
     }
 
 
@@ -228,7 +251,7 @@ public class OpenPhoto extends AppCompatActivity {
 
 
 
-    private void Confirm(Photo photo){
+ /*   private void Confirm(Photo photo){
 
 
         Intent intent = new Intent(getApplicationContext(),OpenAlbum.class);
@@ -242,7 +265,7 @@ public class OpenPhoto extends AppCompatActivity {
         finish();
 
 
-    }
+    }*/
 
     private void Delete(){
 
@@ -255,8 +278,19 @@ public class OpenPhoto extends AppCompatActivity {
                         //Do your Yes progress
                         Intent intent = new Intent(getApplicationContext(),OpenAlbum.class);
                         Bundle bundle = new Bundle();
-                        bundle.putSerializable("photo2", photo);
-                        bundle.putString("PhotoState","delete");
+                        photos=album.getPhotos();
+                        photos.remove(pos);
+
+                        album.setPhotos(photos);
+                        for(int i=0;i<albums.size();i++){
+                            if(album.getName().equalsIgnoreCase(albums.get(i).getName())){
+                                albums.set(i,album);
+                            }
+                        }
+                        sl.Save(albums,OpenPhoto.this);
+
+                        //  bundle.putSerializable("photo2", photo);
+                       // bundle.putString("PhotoState","delete");
                         intent.putExtras(bundle);
                         setResult(RESULT_OK, intent);
                         finish();
@@ -307,26 +341,96 @@ public class OpenPhoto extends AppCompatActivity {
             photo = (Photo) data.getSerializableExtra("photoTag");
 
 
-          for (int i = 0; i < photos.size(); i++) {
+            for (int i = 0; i < photos.size(); i++) {
                 if (photos.get(i).getImageUri().equals(photo.getImageUri())) {
-                    photos.set(i,photo);
+                    photos.set(i, photo);
 
                 }
             }
-          album.setPhotos(photos);
+            album.setPhotos(photos);
             for (int i = 0; i < albums.size(); i++) {
                 if (albums.get(i).getName().equalsIgnoreCase(album.getName())) {
-                    albums.set(i,album);
+                    albums.set(i, album);
                 }
             }
-            sl.Save(albums,this);
-
+            sl.Save(albums, this);
 
 
         }
+        if (resultCode == RESULT_OK && requestCode == 6) {//Move Photo result
+            album2 = (Album) data.getSerializableExtra("album");
+            ArrayList<String> uriArray = new ArrayList<String>();
+            for (int i = 0; i < album2.getNumPhotos(); i++) {
+
+                uriArray.add(album2.getPhotos().get(i).getImageUri());
+            }
+            uri = photo.getImageUri();
+            for (int i = 0; i < uriArray.size(); i++) {
+                if (uriArray.contains(uri)) {
+
+                    new AlertDialog.Builder(OpenPhoto.this)
+                            .setTitle("Cannot Move Photo")
+                            .setMessage("Photo already exists in the desired album")
+                            .setPositiveButton(android.R.string.ok, null)
+                            .show();
+
+                    return;
+                }
+
+
+            }
+            ArrayList<Photo> photos2 = album2.getPhotos();
+            photos2.add(photo);
+            album2.setPhotos(photos2);
+            for (int i = 0; i < albums.size(); i++) {
+                if (albums.get(i).getName().equalsIgnoreCase(album2.getName())) {
+
+                    albums.set(i, album2);
+                }
+            }
+            sl.Save(albums, this);
+
+            DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    switch (which) {
+                        case DialogInterface.BUTTON_POSITIVE:
+                            //Do your Yes progress
+                            Intent intent = new Intent(getApplicationContext(), OpenAlbum.class);
+                            Bundle bundle = new Bundle();
+                            photos = album.getPhotos();
+                            photos.remove(pos);
+
+                            album.setPhotos(photos);
+                            for (int i = 0; i < albums.size(); i++) {
+                                if (album.getName().equalsIgnoreCase(albums.get(i).getName())) {
+                                    albums.set(i, album);
+                                }
+                            }
+                            sl.Save(albums, OpenPhoto.this);
+
+                            //  bundle.putSerializable("photo2", photo);
+                            // bundle.putString("PhotoState","delete");
+                            intent.putExtras(bundle);
+                            setResult(RESULT_OK, intent);
+                            finish();
+
+
+                            break;
+
+                        case DialogInterface.BUTTON_NEGATIVE:
+                            //Do your No progress
+                            break;
+                    }
+                }
+            };
+            AlertDialog.Builder ab = new AlertDialog.Builder(this);
+            ab.setMessage("Photo has been moved into the desire album. " +
+                    "Do you want to delete the photo in this album?").setPositiveButton("Yes", dialogClickListener)
+                    .setNegativeButton("No", dialogClickListener).show();
+
         }
-
-
+    }
 
 
 }

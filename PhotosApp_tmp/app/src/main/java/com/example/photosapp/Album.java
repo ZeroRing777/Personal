@@ -60,16 +60,7 @@ public class Album implements Serializable {
             return 0;
     }
 
-    /**
-     * gets the most recently added photo in the album to display as its thumbnail
-     * @return
-     */
-    public Photo getThumbnail() {
 
-        Photo photo = photos.get(photos.size() -1);
-        return photo;
-
-    }
 }
 
 

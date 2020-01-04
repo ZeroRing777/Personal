@@ -6,102 +6,123 @@
     android:layout_height="match_parent"
     tools:context=".EditTag">
 
-    <EditText
-        android:id="@+id/Type"
-        android:layout_width="118dp"
-        android:layout_height="43dp"
-        android:layout_marginStart="68dp"
-        android:layout_marginLeft="68dp"
-        android:layout_marginTop="232dp"
-        android:ems="10"
-        android:inputType="textPersonName"
-        android:text="Type"
-        app:layout_constraintStart_toEndOf="@+id/AddTag"
-        app:layout_constraintTop_toBottomOf="@+id/TagList" />
-
-    <TextView
-        android:id="@+id/ChooseType"
-        android:layout_width="86dp"
-        android:layout_height="32dp"
-        android:layout_marginStart="80dp"
-        android:layout_marginLeft="80dp"
-        android:layout_marginTop="200dp"
-        android:text="Enter Type"
-        app:layout_constraintStart_toEndOf="@+id/AddTag"
-        app:layout_constraintTop_toBottomOf="@+id/TagList" />
 
     <ListView
         android:id="@+id/TagList"
-        android:layout_width="426dp"
-        android:layout_height="147dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        android:layout_width="150dp"
+        android:layout_height="250dp"
+        app:layout_constraintEnd_toStartOf="@id/EnterName"
+
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/DeleteTag"
+        />
 
     <Button
         android:id="@+id/AddTag"
-        android:layout_width="118dp"
-        android:layout_height="48dp"
-        android:layout_marginStart="32dp"
-        android:layout_marginLeft="32dp"
-        android:layout_marginTop="129dp"
-        android:layout_marginBottom="340dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+
         android:text="Add Tag"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/TagList"
-        app:layout_constraintVertical_bias="0.0" />
+        android:textSize="16dp"
+        android:typeface="normal"
+        android:background="@android:color/darker_gray"
+        android:textColor="@android:color/white"
+        android:textAllCaps="false"
+        android:paddingRight="10dp"
+        android:paddingLeft="10dp"
+
+        app:layout_constraintBottom_toTopOf="@id/DeleteTag"
+        app:layout_constraintStart_toEndOf="@id/TagList"
+        app:layout_constraintEnd_toEndOf="parent"
+
+
+        app:layout_constraintTop_toBottomOf="@+id/Name"
+       />
 
     <TextView
         android:id="@+id/EnterName"
-        android:layout_width="86dp"
-        android:layout_height="32dp"
-        android:layout_marginStart="80dp"
-        android:layout_marginLeft="80dp"
-        android:layout_marginTop="108dp"
-        android:text="Enter Name"
-        app:layout_constraintStart_toEndOf="@+id/AddTag"
-        app:layout_constraintTop_toBottomOf="@+id/TagList" />
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="18dp"
+        android:typeface="normal"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/Name"
+
+        android:text="Enter Tag Name"
+        app:layout_constraintStart_toEndOf="@+id/TagList"
+        app:layout_constraintEnd_toEndOf="parent"
+        />
+
+
+    <TextView
+        android:id="@+id/List"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="18dp"
+        android:typeface="normal"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/TagList"
+
+        android:text="Tag List"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/EnterName"
+        />
 
     <EditText
         android:id="@+id/Name"
-        android:layout_width="118dp"
-        android:layout_height="43dp"
-        android:layout_marginStart="68dp"
-        android:layout_marginLeft="68dp"
-        android:layout_marginTop="140dp"
-        android:ems="10"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+
         android:inputType="textPersonName"
-        android:text="Name"
-        app:layout_constraintStart_toEndOf="@+id/AddTag"
-        app:layout_constraintTop_toBottomOf="@+id/TagList" />
+
+        app:layout_constraintStart_toEndOf="@+id/TagList"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/EnterName"
+        app:layout_constraintBottom_toTopOf="@+id/AddTag"
+        />
 
     <Button
         android:id="@+id/DeleteTag"
-        android:layout_width="171dp"
-        android:layout_height="56dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginTop="52dp"
-        android:text="Delete Tag by clicking iy"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+
+
+        android:textSize="16dp"
+        android:typeface="normal"
+        android:background="@android:color/darker_gray"
+        android:textColor="@android:color/white"
+        android:textAllCaps="false"
+        android:paddingRight="10dp"
+        android:paddingLeft="10dp"
+
+
+        android:text="Delete the selected tag"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/AddTag" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/TagList"
+        app:layout_constraintBottom_toTopOf="@+id/Confirm"
+
+        />
 
     <Button
         android:id="@+id/Confirm"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="148dp"
-        android:layout_marginLeft="148dp"
-        android:layout_marginTop="19dp"
-        android:layout_marginBottom="232dp"
-        android:text="Confirm"
+        android:textSize="16dp"
+        android:typeface="normal"
+        android:background="@android:color/darker_gray"
+        android:textColor="@android:color/white"
+        android:textAllCaps="false"
+        android:paddingRight="10dp"
+        android:paddingLeft="10dp"
+
+        android:text="Save Changes"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.074"
+
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/DeleteTag"
-        app:layout_constraintVertical_bias="0.0" />
+        />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

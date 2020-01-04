@@ -13,7 +13,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".MainActivity"></activity>
+        <activity android:name=".OpenAlbumList"></activity>
+        <activity android:name=".OpenSearchResult" />
+        <activity android:name=".MainActivity" />
         <activity android:name=".RenameAlbum" />
         <activity android:name=".OpenPhoto" />
         <activity android:name=".CreateAlbum" />

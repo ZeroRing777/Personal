@@ -1,40 +1,48 @@
 package com.example.photosapp;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.GridView;
 import android.widget.ListView;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class SearchPhotos extends AppCompatActivity {
 
 
     Button search;
-    EditText tagType,tagName;
-    ListView result;
+    GridView result;
+    EditText tagName;
+
     ArrayList<Album> albums;
     ArrayList<Photo> photos;
     ArrayList<Photo> results;
-    PhotoListAdapter adapter;
-    String condition,str;
-    ArrayList<String> tagString;
-    String [] strr;
-    boolean flag;
+    ArrayList<Photo> tmp;
+
+    String str;
+
+    private static ImageAdapter adapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search_photos);
-        search=findViewById(R.id.temp);
-        tagType=findViewById(R.id.TagType);
-
+        search=findViewById(R.id.search);
         result=findViewById(R.id.Result);
+        tagName=findViewById(R.id.Tag);
         photos=new ArrayList<Photo>();
 
-        albums = (ArrayList<Album>) getIntent().getSerializableExtra("albums");
+       albums = (ArrayList<Album>) getIntent().getSerializableExtra("albums");
+
         for(int i=0;i<albums.size();i++){
             for(int j=0;j<albums.get(i).getPhotos().size();j++){
 
@@ -42,6 +50,9 @@ public class SearchPhotos extends AppCompatActivity {
             }
 
         }
+
+
+
         search.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -49,115 +60,84 @@ public class SearchPhotos extends AppCompatActivity {
             }
         });
 
-      /*  adapter = new PhotoListAdapter(photos, this);
-        result.setAdapter(adapter);*/
+
+        result.setOnItemClickListener(
+                (p, v, pos, id) -> openPhoto(pos)
+        );
+
 
     }
 
 
-    private void Search() {
-        str = tagType.getText().toString();
-
-        results = new ArrayList<Photo>();
-        condition="single";
-       /* if(str.isEmpty()) {
-
-            return;
-        }*/
-
-        if(str.contains("AND")) {
-            System.out.println("contains AND");
-            condition="Conj";
-            strr = str.split(" AND ");
-            System.out.println(strr[0]);
-            System.out.println(strr[1]);
-            if(strr[1].isEmpty()||strr[0].isEmpty()) {
-
-                return;
-            }
-
-        }
-
-        if(str.contains("OR")) {
-            condition="disj";
-            strr = str.split(" OR ", 2);
-            if(strr[1].isEmpty()||strr[0].isEmpty()) {
-
-                return;
-            }
-        }
+    private void Search(){
 
 
 
-        for (int i = 0; i < photos.size(); i++) {
 
-            Photo p = photos.get(i);
-
-            tagString = p.getTagsString();
-
-            //  Log.d("tag", tagString.get(i));
-            if (condition.equals("single") && tagString.contains(str)) {
-
-
-                results.add(p);
-            } else if (condition.equals("disj")) {
-                if (tagString.contains(strr[0]) || tagString.contains(strr[1])) {
-
-                    results.add(p);
-
-                }
-            } else if (condition.equals("Conj")) {
-                System.out.println("in conjuction");
-                if (tagString.contains(strr[0]) && tagString.contains(strr[1])) {
-
-                    results.add(p);
-
-                }
-
-
-            }
-        }
-
-
-
-       // flag=false;
-       // results=new ArrayList<Photo>();
-
-    /*   for(int i=0;i<photos.size();i++) {
-
-            Photo p = photos.get(i);
-
-            tagString = p.getTagsString();
-            Log.d("tag",tagString.get(i));
-            if (condition.equals("single") && tagString.contains(str) ){
-
-
-                results.add(p);
-
-
-            } else if (condition.equals("disj")) {
-                if (tagString.contains(strr[0]) || tagString.contains(strr[1])) {
-
-                    results.add(p);
-
-                }
-            } else if (condition.equals("Conj")) {
-                System.out.println("in conjuction");
-                if (tagString.contains(strr[0]) && tagString.contains(strr[1])) {
-
-                    results.add(p);
-
-                }
-
-
-            }
-
-        }
-
-        }*/
-
-            adapter = new PhotoListAdapter(results, this);
+        str = tagName.getText().toString();
+        if(str.equalsIgnoreCase("Show All photos")){
+            results=new ArrayList<Photo>(new HashSet<Photo>(photos));
+            adapter = new ImageAdapter(this,results);
             result.setAdapter(adapter);
+            return;
+        }
+        if(str.isEmpty()){
+            return;
+        }
+        tmp=new ArrayList<Photo>();
+        for(int i=0;i<photos.size();i++){
+            for(int j=0;j<photos.get(i).getTags().size();j++) {
+                String Tag = photos.get(i).getTags().get(j);
+                Tag=Tag.toLowerCase();
+                str=str.toLowerCase();
+                if(Tag.contains(str)){
+                    tmp.add(photos.get(i));
+
+                }
+
+            }
 
         }
+
+
+        if(results.isEmpty()){
+            new AlertDialog.Builder(SearchPhotos.this)
+
+                    .setMessage("No matching result")
+                    .setPositiveButton(android.R.string.ok, null)
+                    .show();
+
+
+        }
+
+
+       results = new ArrayList<Photo>(new HashSet<Photo>(tmp));
+
+
+        adapter = new ImageAdapter(this,results);
+        result.setAdapter(adapter);
+
+
+    }
+
+
+    private void openPhoto(int pos){
+
+
+        Photo p = results.get(pos);
+        Log.d("Open Photo", p.getImageUri());
+
+        Intent intent = new Intent(this, OpenSearchResult.class);
+
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("results",results);
+        bundle.putSerializable("photo", p);
+        bundle.putSerializable("pos",pos);
+        intent.putExtras(bundle);
+        startActivity(intent);
+
+
+    }
+
+
     }

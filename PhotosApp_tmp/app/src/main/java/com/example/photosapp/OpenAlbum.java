@@ -263,9 +263,14 @@ public class OpenAlbum extends AppCompatActivity {
 
 
             // album = (Album)data.getSerializableExtra("album");
-            album = (Album) getIntent().getSerializableExtra("album");
+         //   album = (Album) getIntent().getSerializableExtra("album");
 
-            uriArray = (ArrayList<String>) getIntent().getSerializableExtra("uriArray");
+          //  uriArray = (ArrayList<String>) getIntent().getSerializableExtra("uriArray3");
+            uriArray=new ArrayList<String>();
+            for(int i=0;i<album.getNumPhotos();i++){
+
+                uriArray.add(album.getPhotos().get(i).getImageUri());
+            }
 
 
             imageUri = data.getData();
@@ -308,8 +313,14 @@ public class OpenAlbum extends AppCompatActivity {
 
         }
 
+
+        if(resultCode == RESULT_OK && requestCode == 3){//openPhoto
+
+            albums=sl.load(this);
+        }
+
         //Agin, contains unnecessary code
-        if (resultCode == RESULT_OK && requestCode == 3) {//openPhoto
+      /*  if (resultCode == RESULT_OK && requestCode == 3) {//openPhoto
            String state2=(String) data.getSerializableExtra("PhotoState");
 
              p = (Photo) data.getSerializableExtra("photo2");
@@ -344,7 +355,7 @@ public class OpenAlbum extends AppCompatActivity {
 
             }
 
-        }
+        }*/
 
         if(resultCode == RESULT_OK && requestCode == 4) {//rename Album
 
@@ -368,6 +379,8 @@ public class OpenAlbum extends AppCompatActivity {
 
 
         }
+
+
 
     }
 }

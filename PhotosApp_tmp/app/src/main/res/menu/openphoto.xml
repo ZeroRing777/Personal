@@ -5,17 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".OpenPhoto"
     >
-    <item
-        android:id="@+id/DeletePhoto"
 
-        android:title="Delete Photo"
-        android:textSize="20dp"
-        android:typeface="normal"
-        android:textAllCaps="false"
-        app:showAsAction="ifRoom"
-
-
-        />
     <item
         android:id="@+id/EditTag"
 
@@ -31,6 +21,17 @@
         android:id="@+id/MovePhoto"
 
         android:title="Move Photo"
+        android:textSize="20dp"
+        android:typeface="normal"
+        android:textAllCaps="false"
+        app:showAsAction="ifRoom"
+
+
+        />
+    <item
+        android:id="@+id/DeletePhoto"
+
+        android:title="Delete Photo"
         android:textSize="20dp"
         android:typeface="normal"
         android:textAllCaps="false"
