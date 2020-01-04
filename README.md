@@ -1,1 +1,1 @@
-# Hello
+PhotosApp_tmp is a andorid app. The app could create, rename, delete albums. After loading photos in one album, you could delete, remove, and edit tags of the photos. you could also search for photos accorinding to their tags. If you want to try this app, you could download the app_release.apk file to install it on your andorid phone. Thanks for looking my project!
